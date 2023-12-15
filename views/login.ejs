@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Head-->
+    <%- include('layout/head'); -%>
+    <body class="d-flex flex-column">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <%- include('layout/nav'); -%>
+            <!-- Page content-->
+            <section class="py-5">
+                <div class="container px-5">
+                    <!-- Login form-->
+                    <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                        <div class="text-center mb-5">
+                            <h1 class="fw-bolder">Login for DriveTest</h1>
+                            <!-- <p class="lead fw-normal text-muted mb-0">This site is UNDER CONSTRUCTION</p> -->
+                            <% if (loginMessage) { %>
+                                <span style="color: red;"><h3 class="fw-bolder"><%= loginMessage %></h3></span>
+                            <% } %>
+                        </div>
+                        <div class="row gx-5 justify-content-center">
+                            <div class="col-lg-8 col-xl-6">
+                                <form id="contactForm" action="/login" method="post">
+                                    <!-- Username input-->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="username" name="username" type="text" placeholder="Enter your username..." data-sb-validations="required" />
+                                        <label for="username">Username</label>
+                                        <div class="invalid-feedback" data-sb-feedback="username:required">A name is required.</div>
+                                    </div>
+                                    <!-- Password input-->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="password" name="password" type="password" placeholder="*********" data-sb-validations="required,email" />
+                                        <label for="password">Password</label>
+                                        <div class="invalid-feedback" data-sb-feedback="password:required">An email is required.</div>
+                                        <div class="invalid-feedback" data-sb-feedback="password:password">Email is not valid.</div>
+                                    </div>
+                                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                                    <!-- Submit Button-->
+                                    <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit">Login</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Login form-->
+                    <!-- Signup form-->
+                    <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                        <div class="text-center mb-5">
+                            <h1 class="fw-bolder">Signup for DriveTest</h1>
+                            <!-- <p class="lead fw-normal text-muted mb-0">This site is UNDER CONSTRUCTION</p> -->
+                            <% if (signupMessage) { %>
+                                <span style="color: red;"><h3 class="fw-bolder"><%= signupMessage %></h3></span>
+                            <% } %>
+                        </div>
+                        <div class="row gx-5 justify-content-center">
+                            <div class="col-lg-8 col-xl-6">
+                                <form id="signupForm" action="/signup" method="post">
+                                    <!-- Username input-->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="signup-username" name="signup_username" type="text" placeholder="Enter your username..." data-sb-validations="required" />
+                                        <label for="signup-username">Username</label>
+                                        <div class="invalid-feedback" data-sb-feedback="signup-username:required">A name is required.</div>
+                                    </div>
+                                    <!-- Password input-->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="signup-password" name="signup_password" type="password" placeholder="*********" data-sb-validations="required,email" />
+                                        <label for="signup-password">Password</label>
+                                        <div class="invalid-feedback" data-sb-feedback="signup-password:required">An email is required.</div>
+                                        <div class="invalid-feedback" data-sb-feedback="signup-password:password">Email is not valid.</div>
+                                    </div>
+                                    <!--Repeat Password input-->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="signup-re-password" name="signup_re_password" type="text" placeholder="*********" data-sb-validations="required,email" />
+                                        <label for="signup-re-password">Repeat Password</label>
+                                        <div class="invalid-feedback" data-sb-feedback="signup-re-password:required">An email is required.</div>
+                                        <div class="invalid-feedback" data-sb-feedback="signup-re-password:re-password">Email is not valid.</div>
+                                    </div>
+                                    <!--User Type input-->
+                                    <div class="form-floating mb-3">
+                                        <!-- <input class="form-control" id="UserType" type="text" placeholder="*********" data-sb-validations="required,email" /> -->
+                                        <p for="UserType">User Type:</p>
+                                        <select  name="UserType" id="UserType" name="UserType">
+                                            <option class="dropdown-item" value="Driver">Driver</option>
+                                            <option class="dropdown-item" value="Examiner">Examiner</option>
+                                            <option class="dropdown-item" value="Admin">Admin</option>
+                                        </select>
+                                        
+                                        <div class="invalid-feedback" data-sb-feedback="UserType:required">An email is required.</div>
+                                        <div class="invalid-feedback" data-sb-feedback="UserType:re-password">Email is not valid.</div>
+                                    </div>
+                                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                                    <!-- Submit Button-->
+                                    <div class="d-grid"><button class="btn btn-primary btn-lg" id="saveButton" name="saveButton" type="submit">Save</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Signup form-->
+                </div>
+            </section>
+        </main>
+        <!-- Footer-->
+        <%- include('layout/footer'); -%>
+        <!-- Scripts-->
+        <%- include('layout/scripts'); -%>
+    </body>
+</html>

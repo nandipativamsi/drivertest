@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Head-->
+    <%- include('layout/head'); -%>
+    <body class="d-flex flex-column">
+        <script>
+            async function fetchTime() {
+                const dateInput = document.getElementById("date");
+                const timeSelect = document.getElementById("time");
+                console.log(dateInput);
+                const selectedDate = dateInput.value;
+
+                try {
+                    // Fetch existing appointment timings for the selected date
+                    const response = await fetch(`/getAppointments?date=${selectedDate}`);
+                    const existingAppointments = await response.json();
+                    console.log(existingAppointments);
+                    // Enable all options initially
+                    Array.from(timeSelect.options).forEach(option => {
+                        option.disabled = false;
+                    });
+
+                    // Disable options that are already booked
+                    existingAppointments.forEach(existingAppointment => {
+                        const optionToDisable = timeSelect.querySelector(`option[value="${existingAppointment.time}"]`);
+                        if (optionToDisable) {
+                            optionToDisable.disabled = true;
+                        }
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        </script>
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <%- include('layout/nav'); -%>
+            <!-- Page content-->
+            <section class="py-5">
+                <div class="container px-5">
+                    <!-- Appointment form-->
+                    <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                        <div class="text-center mb-5">
+                            <h1 class="fw-bolder">Create Appointments</h1>
+                            <!-- <p class="lead fw-normal text-muted mb-0">This site is UNDER CONSTRUCTION</p> -->
+                            <% if (appointmentMessage) { %>
+                                <span style="color: red;"><h3 class="fw-bolder"><%= appointmentMessage %></h3></span>
+                            <% } %>
+                        </div>
+                        <div class="row gx-5 justify-content-center">
+                            <div class="col-lg-8 col-xl-6">
+                                <form id="contactForm" action="/appointmentSlot" method="post">
+                                    <!-- Username input-->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="date" name="date" type="date" onchange="fetchTime()" data-sb-validations="required" />
+                                        <label for="date">Date</label>
+                                        <div class="invalid-feedback" data-sb-feedback="username:required">Date is required.</div>
+                                    </div>
+                                    <!-- Password input-->
+                                    <div class="form-floating mb-3">
+                                        <p for="time">Time</p>
+                                        <select  name="time" id="time" >
+                                            <option class="dropdown-item" value="9:00 AM">9:00 AM</option>
+                                            <option class="dropdown-item" value="9:30 AM">9:30 AM</option>
+                                            <option class="dropdown-item" value="10:00 AM">10:00 AM</option>
+                                            <option class="dropdown-item" value="10:30 AM">10:30 AM</option>
+                                            <option class="dropdown-item" value="11:00 AM">11:00 AM</option>
+                                            <option class="dropdown-item" value="11:30 AM">11:30 AM</option>
+                                            <option class="dropdown-item" value="12:00 PM">12:00 PM</option>
+                                            <option class="dropdown-item" value="12:30 PM">12:30 PM</option>
+                                            <option class="dropdown-item" value="1:00 PM">1:00 PM</option>
+                                            <option class="dropdown-item" value="1:30 PM">1:30 PM</option>
+                                            <option class="dropdown-item" value="2:00 PM">2:00 PM</option>
+                                            <option class="dropdown-item" value="2:30 PM">2:30 PM</option>
+                                        </select>
+                                        <div class="invalid-feedback" data-sb-feedback="password:required">Time is required.</div>
+                                    </div>
+                                    <!-- Submit Button-->
+                                    <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Appointment form-->
+                </div>
+            </section>
+        </main>
+        <!-- Footer-->
+        <%- include('layout/footer'); -%>
+        <!-- Scripts-->
+        <%- include('layout/scripts'); -%>
+    </body>
+</html>

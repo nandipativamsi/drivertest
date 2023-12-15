@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Head-->
+    <%- include('layout/head'); -%>
+    <body class="d-flex flex-column">
+        <style>
+            #wrapTest{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+            }
+
+            #testType{
+                align-self: stretch;
+                width: 70%; 
+            }    
+
+            /* Style for the driver list */
+            #driverList {
+                list-style: none; /* Remove bullet points */
+                padding: 0; /* Remove default padding */
+            }
+
+            #driverList li {
+                border: 1px solid #ccc; /* Add border for rectangular box effect */
+                margin-bottom: 10px; /* Adjust margin between items */
+                padding: 10px; /* Add padding inside the box */
+            }
+            /* Style for the enlarged driver list item */
+            #enlargedDriverListItem {
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+                padding: 10px;
+                display: none; /* Initially hidden */
+            }
+
+        </style>
+        <script>
+             document.addEventListener('DOMContentLoaded', () => {
+            // Call the function when the DOM content is loaded
+                 fetchUsersAndAppointments();
+             });
+                // Add this function to your existing script
+                async function fetchUsersAndAppointments() {
+                    try {
+                        const response = await fetch('/fetchUsersAndAppointments');
+                        const usersWithAppointments = await response.json();
+
+                        // Display driver list
+                        const driverList = document.getElementById('driverList');
+                        driverList.innerHTML = '';
+
+                        usersWithAppointments.forEach(user => {
+                            if(user.user.testType!=null && user.user.testStatus!= null){
+                                const listItem = document.createElement('li');
+
+                                // Create a string with user information and appointment details
+                                const userInfoString = `${user.user.firstName} ${user.user.lastName} - ${user.user.testType} Test - ${user.user.testStatus}`;
+                                const appointmentString = user.appointment ? ` - ${formatDate(user.appointment.date)} - ${user.appointment.time}` : ' - No appointment';
+
+                                // Set the text content of the list item
+                                listItem.textContent = userInfoString + appointmentString;
+
+                                // Append the list item to the driverList
+                                driverList.appendChild(listItem);
+                            }
+                            
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+                // Function to format date as YYYY-MM-dd
+                function formatDate(dateString) {
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                    const formattedDate = new Date(dateString).toLocaleDateString(undefined, options);
+                    return formattedDate;
+                }
+
+            
+            async function filterDrivers() {
+                try {
+                    const testTypeSelect = document.getElementById('testStatus');
+                    const selectedTestType = testTypeSelect.value;
+                    console.log('inside filterDriver');
+                    const response = await fetch(`/fetchUsersAndAppointments?testStatus=${selectedTestType}`);
+                    const filteredUsers = await response.json();
+                    console.log(filteredUsers);
+                    // Display filtered driver list
+                    const driverList = document.getElementById('driverList');
+                    driverList.innerHTML = '';
+                    let userFilter = false;
+                    filteredUsers.forEach(user => {
+                        if(user.user.testStatus == selectedTestType && user.user.testType!=null && user.user.testStatus!= null){
+                            userFilter = true;
+                            const listItem = document.createElement('li');
+                            const userInfoString = `${user.user.firstName} ${user.user.lastName} - ${user.user.testType} Test - ${user.user.testStatus}`;
+                            const appointmentString = user.appointment ? ` - ${formatDate(user.appointment.date)} - ${user.appointment.time}` : ' - No appointment';
+                            listItem.textContent = userInfoString + appointmentString;
+                            driverList.appendChild(listItem);
+                        }
+                    });
+                    if(!userFilter){
+                        const listItem = document.createElement('li');
+                        listItem.textContent = 'No User found. Please try other selection!';
+                        driverList.appendChild(listItem);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            
+        </script>
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <%- include('layout/nav'); -%>
+            <!-- Page content-->
+            <section class="py-5">
+                <div class="container px-5">
+                    <!-- Appointment form-->
+                    <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                        <div class="text-center mb-5">
+                            <h1 class="fw-bolder">Test Results</h1>
+                            <!-- <p class="lead fw-normal text-muted mb-0">This site is UNDER CONSTRUCTION</p> -->
+                            <% if (adminMessage) { %>
+                                <span style="color: red;"><h3 class="fw-bolder"><%= adminMessage %></h3></span>
+                            <% } %>
+                        </div>
+                        <div class="row gx-5 justify-content-center">
+                            <div class="col-lg-8 col-xl-6">
+                                <!-- <form id="contactForm" action="/appointmentSlot" method="post"> -->
+                                    <!-- Username input-->
+                                    <div class="form-floating mb-3">
+                                        <!-- <input class="form-control" id="text" name="date" type="date" onchange="fetchTime()" data-sb-validations="required" />
+                                        <label for="date">Date</label>
+                                        <div class="invalid-feedback" data-sb-feedback="username:required">Date is required.</div> -->
+
+                                        <p for="testType">Select Test Status:</p>
+                                        <div id="wrapTest">
+                                        <select  name="testStatus" id="testStatus" >
+                                            <option class="dropdown-item" value="Pass">Pass</option>
+                                            <option class="dropdown-item" value="Fail">Fail</option>
+                                        </select>
+                                        <div class="d-grid"><button  class="btn btn-primary btn-sm" id="filterButton" onclick="filterDrivers()">Filter</button></div>
+                                        </div>
+                                    </div>
+                                    <!-- Display driver list here -->
+                                    <div class="form-floating mb-3">
+                                        <ul id="driverList">
+                                            <li></li>
+                                        </ul>
+                                    </div>
+                                     
+                                <!-- </form> -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Appointment form-->
+                </div>
+            </section>
+        </main>
+        <!-- Footer-->
+        <%- include('layout/footer'); -%>
+        <!-- Scripts-->
+        <%- include('layout/scripts'); -%>
+    </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Head-->
+    <%- include('layout/head'); -%>
+    <body class="d-flex flex-column h-100">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <%- include('layout/nav'); -%>
+            <!-- Header-->
+            <header class="bg-dark py-5">
+                <div class="container px-5">
+                  <div class="row justify-content-center">
+                      <div class="col-lg-8 col-xxl-6">
+                          <div class="text-center my-5">
+                              <h1 class="fw-bolder text-white mb-3">DriveTest - Dashboard</h1>
+                              <p class="lead fw-normal text-white-50  mb-4">DriveTest Booking Kiosk</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </header>
+            <!-- Features section-->
+            <section class="py-5" id="features">
+                <div class="container px-5 my-5">
+                    <div class="row gx-5">
+                        <div class="col-lg-4 mb-5 mb-lg-0">
+                          <h2 class="fw-bolder mb-0">You can book G2/G drive test from this Kiosk</h2>
+                          <p class="lead fw-normal  mb-4">This website provides you all the facilites for pursuing your drivers license.</p>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="row gx-5 row-cols-1 row-cols-md-2">
+                                <div class="col mb-5 h-100">
+                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                                    <h2 class="h5">Dashboard</h2>
+                                    <p class="mb-0">Find all the details about Drive Test</p>
+                                </div>
+                                <div class="col mb-5 h-100">
+                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
+                                    <h2 class="h5">Login</h2>
+                                    <p class="mb-0">Login to book drive test today.</p>
+                                </div>
+                                <div class="col mb-5 mb-md-0 h-100">
+                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                                    <h2 class="h5">Book G2 Test</h2>
+                                    <p class="mb-0">Book for your G2 test here.</p>
+                                </div>
+                                <div class="col h-100">
+                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                                    <h2 class="h5">Book G Test</h2>
+                                    <p class="mb-0">Book for your final G test here.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- Footer-->
+        <%- include('layout/footer'); -%>
+        <!-- Scripts-->
+        <%- include('layout/scripts'); -%>
+    </body>
+</html>

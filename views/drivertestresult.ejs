@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Head-->
+    <%- include('layout/head'); -%>
+    <body class="d-flex flex-column">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <%- include('layout/nav'); -%>
+            <!-- Page content-->
+            <section class="py-5">
+                <div class="container px-5">
+                    <!-- Appointment form-->
+                    <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                        <div class="text-center mb-5">
+                            <h1 class="fw-bolder">Test Results</h1>
+                            <!-- <p class="lead fw-normal text-muted mb-0">This site is UNDER CONSTRUCTION</p> -->
+                        </div>
+                        <% if (userData.testStatus) { %>
+                        <div class="row gx-5 justify-content-center">
+                            <div class="col-lg-8 col-xl-6">
+                                <!-- <form id="contactForm" action="/appointmentSlot" method="post"> -->
+                                    <!-- Username input-->
+                                    <div class="form-floating mb-3">
+                                        <!-- <input class="form-control" id="text" name="date" type="date" onchange="fetchTime()" data-sb-validations="required" />
+                                        <label for="date">Date</label>
+                                        <div class="invalid-feedback" data-sb-feedback="username:required">Date is required.</div> -->
+                                        <h3><%= userData.testType %> Results</h3>
+                                        <h4>Comments:</h4>
+                                        <p id="comments"><%= userData.comments %></p>
+                                        <h4>Test Result:</h4>
+                                        <p id="result"><%= userData.testStatus %></p>
+                                    </div>
+                                     
+                                <!-- </form> -->
+                            </div>
+                        </div>
+                        <% } else { %>
+                            <div class="row gx-5 justify-content-center">
+                                <div class="col-lg-8 col-xl-6">
+                                    </div>
+                                        <h3>Nothing to display here!</h3>
+                                    </div>
+                        <% } %>
+                    </div>
+                    <!-- Appointment form-->
+                </div>
+            </section>
+        </main>
+        <!-- Footer-->
+        <%- include('layout/footer'); -%>
+        <!-- Scripts-->
+        <%- include('layout/scripts'); -%>
+    </body>
+</html>

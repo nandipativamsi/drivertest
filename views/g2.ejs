@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Head-->
+    <%- include('layout/head'); -%>
+    <body class="d-flex flex-column">
+        <script>
+            async function fetchAvailableTime() {
+               const dateInput = document.getElementById("date");
+               const timeSelect = document.getElementById("time");
+
+               const selectedDate = dateInput.value;
+
+               try {
+                   // Fetch available appointment timings for the selected date
+                   const response = await fetch(`/getAppointments?date=${selectedDate}`);
+                   const availableAppointments = await response.json();
+
+                    // Sort availableAppointments based on time in ascending order
+                    availableAppointments.sort((a, b) => compareTimes(a.time, b.time));
+                   
+                    // Populate options with available time slots
+                    availableAppointments.forEach(appointment => {
+                        if(appointment.isTimeSlotAvailable){
+                            const option = document.createElement('option');
+                            option.value = appointment._id; // Assuming the appointment ID should be the value
+                            option.text = appointment.time;
+                            timeSelect.add(option);
+                        }
+                    });
+               } catch (error) {
+                   console.log(error);
+               }
+           }
+
+           // Custom function to compare time strings in "hh:mm AM/PM" format
+            function compareTimes(time1, time2) {
+                const [hours1, minutes1, period1] = extractTimeComponents(time1);
+                const [hours2, minutes2, period2] = extractTimeComponents(time2);
+
+                if (period1 !== period2) {
+                    // Compare based on AM/PM
+                    return period1.localeCompare(period2);
+                } else if (hours1 !== hours2) {
+                    // Compare hours
+                    return hours1 - hours2;
+                } else {
+                    // Compare minutes if hours are equal
+                    return minutes1 - minutes2;
+                }
+            }
+
+            // Custom function to extract hours, minutes, and period (AM/PM) from time string
+            function extractTimeComponents(time) {
+                const [timePart, period] = time.split(' ');
+                const [hours, minutes] = timePart.split(':').map(Number);
+                return [hours, minutes, period];
+            }
+
+       </script>
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <%- include('layout/nav'); -%>
+            <!-- Contact form-->
+            <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">  
+              <div class="row gx-5 justify-content-center">
+                <div class="text-center mb-5">
+                    <% if (user) { %>
+                        <span style="color: red;"><h3 class="fw-bolder">No User Found!</h3></span>
+                    
+                        <% } else if(user == false) { %>
+                            <span style="color: red;"><h3 class="fw-bolder">Enter proper user information!</h3></span>
+                        <% } %>
+                  <h1 class="fw-bolder">G2 Test Booking</h1>
+                  <h3 class="fw-bolder">Personal Information</h3>
+                  <p class="lead fw-normal text-muted mb-0">Fill your details in the below fields.</p>
+                  <% if (message) { %>
+                    <span style="color: red;"><h3 class="fw-bolder">Please enter valid information!</h3></span>
+                    <% } %>
+              </div>
+              <% if (userData == false) { %>
+                  <div class="col-lg-8 col-xl-6">
+                      <form id="contactForm" action="/g2/updateCustomerInfo" method="post" >
+                          <!-- First Name input-->
+                          <div class="form-floating mb-3">
+                              <input class="form-control" id="firstName" name="firstName" type="text" placeholder="Enter your firstname..." data-sb-validations="required" />
+                              <label for="firstName">First Name</label>
+                              <div class="invalid-feedback" data-sb-feedback="name:required">First name is required.</div>
+                          </div>
+                          <!-- Last Name input-->
+                          <div class="form-floating mb-3">
+                            <input class="form-control" id="lastName" name="lastName" type="text" placeholder="Enter your lastname..." data-sb-validations="required" />
+                            <label for="lastName">Last Name</label>
+                            <div class="invalid-feedback" data-sb-feedback="name:required">Last name is required.</div>
+                        </div>
+                          <!-- License Number input-->
+                          <div class="form-floating mb-3">
+                              <input class="form-control" id="licenseNumber" name="licenseNumber" type="text" placeholder="Enter your license number" data-sb-validations="required" />
+                              <label for="licenseNumber">License Number</label>
+                              <div class="invalid-feedback" data-sb-feedback="email:required">License number is required.</div>
+                              <div class="invalid-feedback" data-sb-feedback="email:email">License number is not valid.</div>
+                          </div>
+                          <!-- Age input-->
+                          <div class="form-floating mb-3">
+                              <input class="form-control" id="age" name="age" type="number" placeholder="Enter Age" data-sb-validations="required" />
+                              <label for="age">Age</label>
+                              <div class="invalid-feedback" data-sb-feedback="phone:required">Age is required.</div>
+                          </div>
+                          <!-- Car Information Section  -->
+                          <div class="text-center mb-5">
+                            <h3 class="fw-bolder">Car Information</h3>
+                            <p class="lead fw-normal text-muted mb-0">Fill your CAR details in the below fields.</p>
+                        </div>
+                        <!-- Car maker input-->
+                          <div class="form-floating mb-3">
+                              <input class="form-control" id="carMaker" name="carMaker" type="text" placeholder="Enter your car maker..." data-sb-validations="required" />
+                              <label for="carMaker">Maker</label>
+                              <div class="invalid-feedback" data-sb-feedback="name:required">Car maker name is required.</div>
+                          </div>
+                          <!-- Model input-->
+                          <div class="form-floating mb-3">
+                            <input class="form-control" id="carModel" name="carModel" type="text" placeholder="Enter your car model..." data-sb-validations="required" />
+                            <label for="carModel">Model</label>
+                            <div class="invalid-feedback" data-sb-feedback="name:required">Last name is required.</div>
+                        </div>
+                          <!-- Year input-->
+                          <div class="form-floating mb-3">
+                              <input class="form-control" id="carYear" name="carYear" type="number" placeholder="YYYY" min="1999" max="2023" data-sb-validations="required,email" />
+                              <label for="carYear">Year</label>
+                              <div class="invalid-feedback" data-sb-feedback="email:required">Year is required.</div>
+                          </div>
+                          <!-- Plate input-->
+                          <div class="form-floating mb-3">
+                              <input class="form-control" id="plateNumber" name="plateNumber" type="text" placeholder="Enter plate number" data-sb-validations="required" />
+                              <label for="plateNumber">Plate Number</label>
+                              <div class="invalid-feedback" data-sb-feedback="plate-number:required">Plate number is required.</div>
+                          </div>
+                          <h3>Choose Available Slots below:</h3>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="date" name="date" type="date" onchange="fetchAvailableTime()" data-sb-validations="required" />
+                                <label for="date">Date</label>
+                                <div class="invalid-feedback" data-sb-feedback="username:required">Date is required.</div>
+                            </div>
+                            <!-- Password input-->
+                            <div class="form-floating mb-3">
+                                <p for="time">Time</p>
+                                <select  name="time" id="time" >
+                                </select>
+                                <div class="invalid-feedback" data-sb-feedback="password:required">Time is required.</div>
+                            </div>
+                          <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                          <!-- Submit Button-->
+                          <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button></div>
+                      </form>
+                  </div>
+                  <% } else { %>
+                    <div class="col-lg-8 col-xl-6">
+                        <form id="contactForm2" action="/g2/updateCustomerInfo" method="post" >
+                            <!-- First Name input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="firstName" name="firstName" type="text" value="<%= userData.firstName %>" placeholder="Enter your firstname..." data-sb-validations="required" readonly/>
+                                <label for="firstName">First Name</label>
+                                <div class="invalid-feedback" data-sb-feedback="name:required">First name is required.</div>
+                            </div>
+                            <!-- Last Name input-->
+                            <div class="form-floating mb-3">
+                              <input class="form-control" id="lastName" name="lastName" type="text" value="<%= userData.lastName %>" placeholder="Enter your lastname..." data-sb-validations="required" readonly/>
+                              <label for="lastName">Last Name</label>
+                              <div class="invalid-feedback" data-sb-feedback="name:required">Last name is required.</div>
+                          </div>
+                            <!-- License Number input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="licenseNumber" name="licenseNumber" type="text" value="<%= userData.licenseNumber %>" placeholder="Enter your license number" data-sb-validations="required" readonly/>
+                                <label for="licenseNumber">License Number</label>
+                                <div class="invalid-feedback" data-sb-feedback="email:required">License number is required.</div>
+                                <div class="invalid-feedback" data-sb-feedback="email:email">License number is not valid.</div>
+                            </div>
+                            <!-- Age input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="age" name="age" type="number" value="<%= userData.age %>" placeholder="Enter Age" data-sb-validations="required" readonly/>
+                                <label for="age">Age</label>
+                                <div class="invalid-feedback" data-sb-feedback="phone:required">Age is required.</div>
+                            </div>
+                            <!-- Car Information Section  -->
+                            <div class="text-center mb-5">
+                              <h3 class="fw-bolder">Car Information</h3>
+                              <p class="lead fw-normal text-muted mb-0">Fill your CAR details in the below fields.</p>
+                          </div>
+                          <!-- Car maker input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="carMaker" name="carMaker" type="text" value="<%= userData.carDetails.carMaker %>" placeholder="Enter your car maker..." data-sb-validations="required" readonly/>
+                                <label for="carMaker">Maker</label>
+                                <div class="invalid-feedback" data-sb-feedback="name:required">Car maker name is required.</div>
+                            </div>
+                            <!-- Model input-->
+                            <div class="form-floating mb-3">
+                              <input class="form-control" id="carModel" name="carModel" type="text" value="<%= userData.carDetails.carModel %>" placeholder="Enter your car model..." data-sb-validations="required" readonly/>
+                              <label for="carModel">Model</label>
+                              <div class="invalid-feedback" data-sb-feedback="name:required">Last name is required.</div>
+                          </div>
+                            <!-- Year input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="carYear" name="carYear" type="number" value="<%= userData.carDetails.carYear %>" placeholder="YYYY" min="1999" max="2023" data-sb-validations="required,email" readonly />
+                                <label for="carYear">Year</label>
+                                <div class="invalid-feedback" data-sb-feedback="email:required">Year is required.</div>
+                            </div>
+                            <!-- Plate input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="plateNumber" name="plateNumber" type="text" value="<%= userData.carDetails.plateNumber %>" placeholder="Enter plate number" data-sb-validations="required" readonly/>
+                                <label for="plateNumber">Plate Number</label>
+                                <div class="invalid-feedback" data-sb-feedback="plate-number:required">Plate number is required.</div>
+                            </div>
+                            <% if (userData.testType == 'G2' || userData.testType == 'G') { %>
+                            <h3>Appointment Booking Details:</h3>
+                            <!-- date input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="date" name="date" type="text" value="<%= appointmentData.date %>" data-sb-validations="required" />
+                                <label for="date">Date</label>
+                                <div class="invalid-feedback" data-sb-feedback="username:required">Date is required.</div>
+                            </div>
+                            <!-- time input-->
+                            <div class="form-floating mb-3">
+                                <!-- <p for="time">Time</p>
+                                <select  name="time" id="time" >
+                                </select> -->
+                                <input class="form-control" id="time" name="time" type="text" value="<%= appointmentData.time %>" data-sb-validations="required" />
+                                <label for="time">Time</label>
+                                <div class="invalid-feedback" data-sb-feedback="time:required">Time is required.</div>
+                            </div>
+                            <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                            <% } else { %>
+                            <h3>Choose Available Slots below:</h3>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="date" name="date" type="date" onchange="fetchAvailableTime()" data-sb-validations="required" />
+                                <label for="date">Date</label>
+                                <div class="invalid-feedback" data-sb-feedback="username:required">Date is required.</div>
+                            </div>
+                            <!-- Password input-->
+                            <div class="form-floating mb-3">
+                                <p for="time">Time</p>
+                                <select  name="time" id="time" >
+                                </select>
+                                <div class="invalid-feedback" data-sb-feedback="password:required">Time is required.</div>
+                            </div>
+                          <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                          <!-- Submit Button-->
+                          <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button></div>
+                          <% } %>
+                        </form>
+                    </div>
+                    <% } %>
+              </div>
+          </div>
+          <!-- Contact form-->
+        </main>
+        <!-- Footer-->
+        <%- include('layout/footer'); -%>
+        <!-- Scripts-->
+        <%- include('layout/scripts'); -%>
+    </body>
+</html>
